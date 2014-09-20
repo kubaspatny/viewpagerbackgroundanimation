@@ -3,15 +3,12 @@ package com.kubaspatny.viewpagerbackgroundanimation.app;
 import java.util.Locale;
 
 import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,8 +22,9 @@ import com.astuetz.PagerSlidingTabStrip;
 public class MainActivity extends FragmentActivity {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
-    private ValueAnimator mColorAnimation;
     ViewPager mViewPager;
+    Integer[] colors = null;
+    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +43,7 @@ public class MainActivity extends FragmentActivity {
         tabs.setViewPager(mViewPager);
 
         tabs.setOnPageChangeListener(new CustomOnPageChangeListener());
-        setUpColorAnimator();
+        setUpColors();
 
     }
 
@@ -65,25 +63,14 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setUpColorAnimator(){
+    private void setUpColors(){
 
         Integer color1 = getResources().getColor(R.color.color1);
         Integer color2 = getResources().getColor(R.color.color2);
         Integer color3 = getResources().getColor(R.color.color3);
 
-        mColorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), color1, color2, color3);
-        mColorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                mViewPager.setBackgroundColor((Integer)animator.getAnimatedValue());
-            }
-
-        });
-
-        // (3 - 1) = number of pages minus 1
-        mColorAnimation.setDuration((3 - 1) * 10000000000l);
-
+        Integer[] colors_temp = {color1, color2, color3};
+        colors = colors_temp;
 
     }
 
@@ -157,7 +144,16 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            mColorAnimation.setCurrentPlayTime((long)((positionOffset +  position)* 10000000000l));
+            if(position < (mSectionsPagerAdapter.getCount() -1)) {
+
+                mViewPager.setBackgroundColor((Integer) argbEvaluator.evaluate(positionOffset, colors[position], colors[position + 1]));
+
+            } else {
+
+                // the last page color
+                mViewPager.setBackgroundColor(colors[colors.length - 1]);
+
+            }
 
         }
 
