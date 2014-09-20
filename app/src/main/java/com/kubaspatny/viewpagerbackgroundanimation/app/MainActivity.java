@@ -144,7 +144,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            if(position < (mSectionsPagerAdapter.getCount() -1)) {
+            if(position < (mSectionsPagerAdapter.getCount() -1) || position < (colors.length - 1)) {
 
                 mViewPager.setBackgroundColor((Integer) argbEvaluator.evaluate(positionOffset, colors[position], colors[position + 1]));
 
