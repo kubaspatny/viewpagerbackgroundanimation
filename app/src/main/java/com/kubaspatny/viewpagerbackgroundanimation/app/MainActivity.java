@@ -93,16 +93,7 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
+            return (getString(R.string.title_section) + position).toUpperCase();
         }
     }
 
@@ -144,7 +135,7 @@ public class MainActivity extends FragmentActivity {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            if(position < (mSectionsPagerAdapter.getCount() -1) || position < (colors.length - 1)) {
+            if(position < (mSectionsPagerAdapter.getCount() -1) && position < (colors.length - 1)) {
 
                 mViewPager.setBackgroundColor((Integer) argbEvaluator.evaluate(positionOffset, colors[position], colors[position + 1]));
 
